@@ -1,5 +1,5 @@
-import { IncomingMessage, ServerResponse } from "node:http";
-import { ParsedUrlQuery } from "node:querystring";
+import { IncomingMessage, ServerResponse } from 'node:http';
+import { ParsedUrlQuery } from 'node:querystring';
 
 export interface Request extends IncomingMessage {
   query?: ParsedUrlQuery;
@@ -14,13 +14,22 @@ export interface Response extends ServerResponse {
 
 export type NextFunction = (err?: Error) => void;
 
-export type Methods = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+export type Methods = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 export type Callback = (req: Request, res: Response, next: NextFunction) => void;
-export type AsyncCallback = (req: Request, res: Response, next: NextFunction) => Promise<void>;
+export type AsyncCallback = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => Promise<void>;
 export type CallbackTemplate = Callback | AsyncCallback;
 
-export type ErrorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => void;
+export type ErrorHandler = (
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => void;
 
 export type Middleware = (req: Request, res: Response, next: NextFunction) => void;
 
