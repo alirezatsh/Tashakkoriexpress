@@ -39,9 +39,7 @@ export type Route = {
   handler: CallbackTemplate;
 };
 
-export type RouteMap = {
-  [key: string]: Route[];
-};
+export type RouteMap = Record<Methods, Route[]>;
 
 export interface ApplicationConfig {
   port: number;
