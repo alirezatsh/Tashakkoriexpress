@@ -1,69 +1,42 @@
-import { IncomingMessage, ServerResponse } from 'node:http';
-import { parse } from 'node:url';
-import { Route, Methods, Request, Response, CallbackTemplate } from './types';
+import { Route, Request, RequestHandler } from './types';
 
-class Router {
-  private routes: Record<Methods, Route[]> = {
-    GET: [],
-    POST: [],
-    PUT: [],
-    DELETE: [],
-    PATCH: []
-  };
+export class Router {
+  private routes: Route[];
 
-  addRoute(method: Methods, path: string, handler: CallbackTemplate) {
-    this.routes[method].push({ method, path, handler });
+  constructor() {
+    this.routes = [];
   }
 
-  handleRequest(req: IncomingMessage, res: ServerResponse) {
-    const parsedUrl = parse(req.url || '', true);
-    const method = req.method as Methods;
-    const pathname = parsedUrl.pathname || '/';
-
-    const request = req as Request;
-    request.query = parsedUrl.query;
-
-    const response = res as Response;
-    response.status = function (code: number) {
-      this.statusCode = code;
-      return this;
-    };
-    response.json = function (data: object) {
-      this.setHeader('Content-Type', 'application/json');
-      this.end(JSON.stringify(data));
-    };
-    response.redirect = function (path: string) {
-      this.writeHead(302, { Location: path });
-      this.end();
-    };
-
-    const route = this.routes[method]?.find((r) => this.matchRoute(r.path, pathname));
-
-    if (route) {
-      request.params = this.extractParams(route.path, pathname);
-      return route.handler(request, response, () => {});
-    }
-
-    response.status(404).json({ error: 'Route not found' });
+  public addRoute(method: string, path: string, handlers: RequestHandler[]): void {
+    this.routes.push({ method, path, handlers });
   }
 
-  private matchRoute(routePath: string, reqPath: string): boolean {
-    const routeSegments = routePath.split('/');
-    const reqSegments = reqPath.split('/');
-
-    return (
-      routeSegments.length === reqSegments.length &&
-      routeSegments.every((seg, i) => seg.startsWith(':') || seg === reqSegments[i])
+  public matchRoute(method: string, pathname: string, req: Request): Route[] {
+    return this.routes.filter(
+      (route) =>
+        (route.method === method.toLowerCase() || route.method === 'all') &&
+        this.checkPath(route.path, pathname, req)
     );
   }
 
-  private extractParams(routePath: string, reqPath: string): Record<string, string> {
+  private checkPath(path: string, reqPath: string, req: Request): boolean {
+    if (!path.includes(':')) {
+      return path === reqPath || path === '*';
+    }
+
+    const pathParts = path.split('/');
+    const reqPathParts = reqPath.split('/');
+    if (pathParts.length !== reqPathParts.length) return false;
+
     const params: Record<string, string> = {};
-    routePath.split('/').forEach((seg, i) => {
-      if (seg.startsWith(':')) params[seg.slice(1)] = reqPath.split('/')[i];
-    });
-    return params;
+    for (let i = 0; i < pathParts.length; i++) {
+      if (pathParts[i].startsWith(':')) {
+        params[pathParts[i].substring(1)] = reqPathParts[i];
+      } else if (pathParts[i] !== reqPathParts[i]) {
+        return false;
+      }
+    }
+    req.params = { ...params };
+    return true;
   }
 }
-
-export default Router;

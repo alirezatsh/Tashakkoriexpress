@@ -1,33 +1,31 @@
-import { Request, Response, NextFunction, Middleware } from './types';
+import { Request, Response, NextFunction, RequestHandler } from './types';
 
-class MiddlewareManager {
-  private middlewares: Middleware[] = [];
+/**
+ * @returns {RequestHandler}
+ */
+export function jsonMiddleware(): RequestHandler {
+  return (req: Request, res: Response, next: NextFunction): void => {
+    const contentType = req.headers['content-type'];
 
-  use(middleware: Middleware) {
-    this.middlewares.push(middleware);
-  }
+    if (!contentType || !contentType.includes('application/json')) {
+      return next();
+    }
 
-  async execute(req: Request, res: Response, finalHandler: () => void) {
-    let index = 0;
+    let body = '';
 
-    const next: NextFunction = async (err?: Error) => {
-      if (err) {
-        // eslint-disable-next-line no-undef
-        console.error('Middleware error:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-        return;
+    req.on('data', (chunk) => {
+      body += chunk.toString();
+    });
+
+    req.on('end', () => {
+      if (body) {
+        try {
+          req.body = JSON.parse(body);
+        } catch (e) {
+          return next(e);
+        }
       }
-      if (index < this.middlewares.length) {
-        const middleware = this.middlewares[index];
-        index++;
-        await Promise.resolve(middleware(req, res, next));
-      } else {
-        finalHandler();
-      }
-    };
-
-    next();
-  }
+      next();
+    });
+  };
 }
-
-export default MiddlewareManager;

@@ -1,8 +1,10 @@
 {
   "name": "tashakkoriexpress",
   "version": "1.0.0",
+  "types": "dist/index.d.ts",
   "description": "",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "scripts": {
     "build": "tsc",
     "lint": "eslint . --ext .ts",
@@ -17,6 +19,7 @@
     "@types/node": "^22.13.10",
     "express": "^4.21.2",
     "fs-extra": "^11.3.0",
+    "tashakkoriexpress": "file:",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
   },

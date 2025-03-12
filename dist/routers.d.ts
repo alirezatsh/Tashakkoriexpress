@@ -1,10 +1,8 @@
-import { IncomingMessage, ServerResponse } from 'node:http';
-import { Methods, CallbackTemplate } from './types';
-declare class Router {
-  private routes;
-  addRoute(method: Methods, path: string, handler: CallbackTemplate): void;
-  handleRequest(req: IncomingMessage, res: ServerResponse): void | Promise<void>;
-  private matchRoute;
-  private extractParams;
+import { Route, Request, RequestHandler } from './types';
+export declare class Router {
+    private routes;
+    constructor();
+    addRoute(method: string, path: string, handlers: RequestHandler[]): void;
+    matchRoute(method: string, pathname: string, req: Request): Route[];
+    private checkPath;
 }
-export default Router;
