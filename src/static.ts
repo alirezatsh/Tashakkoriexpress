@@ -1,15 +1,9 @@
 import { Request, Response, NextFunction } from './types';
 import { parse } from 'url';
-import { join, normalize } from 'path';
+import path from 'path';
 import fs from 'fs-extra';
+import mime from 'mime-types';
 
-/**
- * Middleware function to serve static files.
- * @param {string} root - Root directory for serving static files.
- * @param {Request} req - The incoming request.
- * @param {Response} res - The outgoing response.
- * @param {NextFunction} next - The next function in the middleware stack.
- */
 export async function serveStatic(
   root: string,
   req: Request,
@@ -19,36 +13,37 @@ export async function serveStatic(
   try {
     const parsedUrl = parse(req.url as string, true);
     const tempPath = parsedUrl.pathname!;
-
-    // Ensure the path is valid
     const segments = tempPath.split('/');
     const lastSegment = segments[segments.length - 1];
     const pathname = decodeURIComponent(lastSegment);
-    const filePath = normalize(join(root, pathname));
 
-    // Prevent directory traversal attacks by ensuring the file path stays within the root directory
+    const filePath = path.resolve(root, pathname);
+
     if (!filePath.startsWith(root)) {
       return next(new Error('File Path Is Not Correct'));
     }
 
-    // Check if file exists and is not a directory
     const fileExists = await fs.pathExists(filePath);
-    const stats = await fs.stat(filePath);
-    if (!fileExists || stats.isDirectory()) {
+    if (!fileExists) {
       return next(new Error("File Doesn't Exist"));
     }
 
-    // Send file content with proper headers
-    res.status(200);
-    const stream = fs.createReadStream(filePath);
+    const stats = await fs.stat(filePath);
 
-    // Pipe the file to the response
+    if (stats.isDirectory()) {
+      return next(new Error('Requested Path Is a Directory'));
+    }
+
+    res.status(200);
+    res.setHeader('Content-Type', mime.lookup(filePath) || 'application/octet-stream');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+
+    const stream = fs.createReadStream(filePath);
     stream.pipe(res);
 
     stream.on('end', () => res.end());
     stream.on('error', (err) => next(err));
-  } catch (err) {
-    // Handle unexpected errors
-    next(err);
+  } catch (error) {
+    next(error);
   }
 }

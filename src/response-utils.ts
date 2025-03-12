@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Response } from './types';
 import { ServerResponse } from 'http';
 
