@@ -12,9 +12,9 @@ export type NextFunction = (err?: any) => void;
  * @property {any} [body] - The body of the request (optional).
  */
 export interface Request extends IncomingMessage {
-    query: Record<string, string>;
-    params: Record<string, string>;
-    body?: any;
+  query: Record<string, string>;
+  params: Record<string, string>;
+  body?: any;
 }
 /**
  * Interface for a Response which extends the ServerResponse from Node.js HTTP module.
@@ -24,10 +24,10 @@ export interface Request extends IncomingMessage {
  * @property {Function} send - Method to send a response.
  */
 export interface Response extends ServerResponse {
-    json(data: any): void;
-    redirect(url: string): void;
-    status(code: number): Response;
-    send(data: any): void;
+  json(data: any): void;
+  redirect(url: string): void;
+  status(code: number): Response;
+  send(data: any): void;
 }
 /**
  * Type for a simple request handler.
@@ -43,7 +43,11 @@ export type SimpleHandler = (req: Request, res: Response) => void | Promise<void
  * @param {NextFunction} next - The next function in the middleware stack.
  * @returns {void | Promise<void>}
  */
-export type NextHandler = (req: Request, res: Response, next: NextFunction) => void | Promise<void>;
+export type NextHandler = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => void | Promise<void>;
 /**
  * Type for an error request handler.
  * @param {any} err - The error object.
@@ -52,7 +56,12 @@ export type NextHandler = (req: Request, res: Response, next: NextFunction) => v
  * @param {NextFunction} next - The next function in the middleware stack.
  * @returns {void | Promise<void>}
  */
-export type ErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => void | Promise<void>;
+export type ErrorHandler = (
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => void | Promise<void>;
 /**
  * Type for a request handler which can be a simple, next, or error handler.
  */
@@ -64,7 +73,7 @@ export type RequestHandler = SimpleHandler | NextHandler | ErrorHandler;
  * @property {RequestHandler[]} handlers - Array of handler functions for the route.
  */
 export type Route = {
-    method: string;
-    path: string;
-    handlers: RequestHandler[];
+  method: string;
+  path: string;
+  handlers: RequestHandler[];
 };

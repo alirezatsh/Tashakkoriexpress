@@ -3,7 +3,6 @@
 import { createServer, IncomingMessage, ServerResponse } from 'http';
 import { Router } from './routers';
 import { serveStatic } from './static';
-import { mountResponseMethods } from './response-utils';
 import { jsonMiddleware } from './middlewares';
 import {
   Request,
@@ -12,7 +11,8 @@ import {
   RequestHandler,
   SimpleHandler,
   ErrorHandler,
-  NextHandler
+  NextHandler,
+  mountResponseMethods
 } from './types';
 import { parse } from 'url';
 

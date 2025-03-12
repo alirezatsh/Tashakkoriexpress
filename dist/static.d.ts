@@ -6,4 +6,9 @@ import { Request, Response, NextFunction } from './types';
  * @param {Response} res - The outgoing response.
  * @param {NextFunction} next - The next function in the middleware stack.
  */
-export declare function serveStatic(root: string, req: Request, res: Response, next: NextFunction): Promise<void>;
+export declare function serveStatic(
+  root: string,
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void>;
