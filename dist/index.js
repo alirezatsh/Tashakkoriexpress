@@ -34,7 +34,7 @@ var __awaiter =
   };
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.tashakkoriexpress = tashakkoriexpress;
- 
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const http_1 = require('http');
 const routers_1 = require('./routers');
