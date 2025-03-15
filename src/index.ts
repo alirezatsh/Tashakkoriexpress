@@ -176,5 +176,3 @@ class TashakkoriExpress {
 export function tashakkoriexpress(): TashakkoriExpress {
   return new TashakkoriExpress();
 }
-
-export { Request, Response, NextFunction, RequestHandler };

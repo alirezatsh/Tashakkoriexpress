@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-
 import { IncomingMessage, ServerResponse } from 'http';
 
 // TYPES
