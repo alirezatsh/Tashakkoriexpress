@@ -3,7 +3,7 @@
 import { createServer, IncomingMessage, ServerResponse } from 'http';
 import { Router } from './routers';
 import { serveStatic } from './static';
-import { jsonMiddleware } from './middlewares';
+import { bodyParserMiddleware } from './middlewares';
 import {
   Request,
   Response,
@@ -169,7 +169,7 @@ class TashakkoriExpress {
   }
 
   public json(): RequestHandler {
-    return jsonMiddleware();
+    return bodyParserMiddleware();
   }
 }
 
