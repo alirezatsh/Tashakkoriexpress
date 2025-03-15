@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 'use strict';
 var __awaiter =
   (this && this.__awaiter) ||
@@ -40,45 +41,54 @@ var __importDefault =
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.serveStatic = serveStatic;
 const url_1 = require('url');
-const path_1 = require('path');
+const path_1 = __importDefault(require('path'));
 const fs_extra_1 = __importDefault(require('fs-extra'));
-/**
- * Middleware function to serve static files.
- * @param {string} root - Root directory for serving static files.
- * @param {Request} req - The incoming request.
- * @param {Response} res - The outgoing response.
- * @param {NextFunction} next - The next function in the middleware stack.
- */
+const mime_types_1 = __importDefault(require('mime-types'));
+class FileError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+}
+function isValidPath(filePath, root) {
+  const resolvedPath = path_1.default.resolve(filePath);
+  return resolvedPath.startsWith(root);
+}
 function serveStatic(root, req, res, next) {
   return __awaiter(this, void 0, void 0, function* () {
     try {
       const parsedUrl = (0, url_1.parse)(req.url, true);
       const tempPath = parsedUrl.pathname;
-      // Ensure the path is valid
       const segments = tempPath.split('/');
       const lastSegment = segments[segments.length - 1];
       const pathname = decodeURIComponent(lastSegment);
-      const filePath = (0, path_1.normalize)((0, path_1.join)(root, pathname));
-      // Prevent directory traversal attacks by ensuring the file path stays within the root directory
-      if (!filePath.startsWith(root)) {
-        return next(new Error('File Path Is Not Correct'));
+      const filePath = path_1.default.resolve(root, pathname);
+      if (!isValidPath(filePath, root)) {
+        return next(new FileError('Path Traversal Detected', 400));
       }
-      // Check if file exists and is not a directory
       const fileExists = yield fs_extra_1.default.pathExists(filePath);
-      const stats = yield fs_extra_1.default.stat(filePath);
-      if (!fileExists || stats.isDirectory()) {
-        return next(new Error("File Doesn't Exist"));
+      if (!fileExists) {
+        return next(new FileError("File Doesn't Exist", 404));
       }
-      // Send file content with proper headers
+      const stats = yield fs_extra_1.default.stat(filePath);
+      if (stats.isDirectory()) {
+        return next(new FileError('Requested Path Is a Directory', 400));
+      }
+      const mimeType =
+        mime_types_1.default.lookup(filePath) || 'application/octet-stream';
       res.status(200);
+      res.setHeader('Content-Type', mimeType);
+      res.setHeader('Cache-Control', 'public, max-age=3600');
       const stream = fs_extra_1.default.createReadStream(filePath);
-      // Pipe the file to the response
       stream.pipe(res);
       stream.on('end', () => res.end());
       stream.on('error', (err) => next(err));
-    } catch (err) {
-      // Handle unexpected errors
-      next(err);
+    } catch (error) {
+      if (error instanceof FileError) {
+        res.status(error.statusCode).json({ error: error.message });
+      } else {
+        next(error);
+      }
     }
   });
 }

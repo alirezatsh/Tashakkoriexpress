@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable require-yield */
 'use strict';
 var __awaiter =
   (this && this.__awaiter) ||
@@ -34,13 +36,13 @@ var __awaiter =
   };
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.tashakkoriexpress = tashakkoriexpress;
-
+/* eslint-disable no-dupe-class-members */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const http_1 = require('http');
 const routers_1 = require('./routers');
 const static_1 = require('./static');
-const response_utils_1 = require('./response-utils');
 const middlewares_1 = require('./middlewares');
+const types_1 = require('./types');
 const url_1 = require('url');
 class TashakkoriExpress {
   constructor() {
@@ -87,7 +89,7 @@ class TashakkoriExpress {
     const server = (0, http_1.createServer)((req, res) => {
       const request = req;
       const response = res;
-      (0, response_utils_1.mountResponseMethods)(response, res);
+      (0, types_1.mountResponseMethods)(response, res);
       this.handleRequest(request, response);
     });
     server.listen(port, callback);
@@ -159,7 +161,7 @@ class TashakkoriExpress {
     });
   }
   json() {
-    return (0, middlewares_1.jsonMiddleware)();
+    return (0, middlewares_1.bodyParserMiddleware)();
   }
 }
 function tashakkoriexpress() {

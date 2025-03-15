@@ -1,8 +1,9 @@
-import { Request, Response, NextFunction, RequestHandler } from './types';
+import { RequestHandler } from './types';
 declare class TashakkoriExpress {
   private router;
   constructor();
   use(handler: RequestHandler): void;
+  // eslint-disable-next-line no-dupe-class-members
   use(path: string, handler: RequestHandler): void;
   all(path: string, handler: RequestHandler, ...handlers: RequestHandler[]): void;
   get(path: string, handler: RequestHandler, ...handlers: RequestHandler[]): void;
@@ -16,4 +17,4 @@ declare class TashakkoriExpress {
   json(): RequestHandler;
 }
 export declare function tashakkoriexpress(): TashakkoriExpress;
-export { Request, Response, NextFunction, RequestHandler };
+export {};
