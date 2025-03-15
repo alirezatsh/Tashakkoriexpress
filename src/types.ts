@@ -41,7 +41,7 @@ export type Route = {
 };
 
 // METHODS
-export function mountResponseMethods(response: Response, res: ServerResponse) {
+export function attachResponseMethods(response: Response, res: ServerResponse) {
   response.status = (code: number): Response => {
     res.statusCode = code;
     return res as Response;

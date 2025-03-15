@@ -12,7 +12,7 @@ import {
   SimpleHandler,
   ErrorHandler,
   NextHandler,
-  mountResponseMethods
+  attachResponseMethods
 } from './types';
 import { parse } from 'url';
 
@@ -85,7 +85,7 @@ class TashakkoriExpress {
     const server = createServer((req: IncomingMessage, res: ServerResponse): void => {
       const request = req as Request;
       const response = res as Response;
-      mountResponseMethods(response, res);
+      attachResponseMethods(response, res);
       this.handleRequest(request, response);
     });
     server.listen(port, callback);

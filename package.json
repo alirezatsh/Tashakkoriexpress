@@ -1,6 +1,6 @@
 {
   "name": "tashakkoriexpress",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "types": "dist/index.d.ts",
   "description": "",
   "main": "dist/index.js",
@@ -15,15 +15,15 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@types/node": "^22.13.10",
     "fs-extra": "^11.3.0",
     "mime-types": "^2.1.35",
-    "ts-node": "^10.9.2"
+    "tashakkoriexpress": "file:"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
     "@types/fs-extra": "^11.0.4",
     "@types/mime-types": "^2.1.4",
+    "@types/node": "^22.13.10",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
     "eslint": "^9.22.0",
@@ -31,6 +31,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^5.2.3",
     "prettier": "^3.5.3",
+    "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
   }
 }
