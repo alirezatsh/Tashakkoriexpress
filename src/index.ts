@@ -12,7 +12,8 @@ import {
   SimpleHandler,
   ErrorHandler,
   NextHandler,
-  attachResponseMethods
+  attachResponseMethods,
+  HttpMethod
 } from './types';
 import { parse } from 'url';
 
@@ -27,52 +28,38 @@ class TashakkoriExpress {
   public use(path: string, handler: RequestHandler): void;
   public use(pathOrHandler: string | RequestHandler, handler?: RequestHandler): void {
     if (typeof pathOrHandler === 'string' && handler) {
-      this.router.addRoute('all', pathOrHandler, [handler]);
+      this.router.addRoute(HttpMethod.ALL, pathOrHandler, [handler]);
     } else if (typeof pathOrHandler === 'function') {
-      this.router.addRoute('all', '*', [pathOrHandler]);
+      this.router.addRoute(HttpMethod.ALL, '*', [pathOrHandler]);
     }
   }
 
-  public all(path: string, handler: RequestHandler, ...handlers: RequestHandler[]): void {
-    const allHandlers = [handler, ...handlers];
-    this.router.addRoute('all', path, allHandlers);
-  }
-
-  public get(path: string, handler: RequestHandler, ...handlers: RequestHandler[]): void {
-    const allHandlers = [handler, ...handlers];
-    this.router.addRoute('get', path, allHandlers);
-  }
-
-  public post(
+  private registerRoute(
+    method: HttpMethod,
     path: string,
-    handler: RequestHandler,
-    ...handlers: RequestHandler[]
+    handlers: RequestHandler[]
   ): void {
-    const allHandlers = [handler, ...handlers];
-    this.router.addRoute('post', path, allHandlers);
+    this.router.addRoute(method, path, handlers);
   }
 
-  public put(path: string, handler: RequestHandler, ...handlers: RequestHandler[]): void {
-    const allHandlers = [handler, ...handlers];
-    this.router.addRoute('put', path, allHandlers);
+  public all(path: string, ...handlers: RequestHandler[]): void {
+    this.registerRoute(HttpMethod.ALL, path, handlers);
   }
 
-  public delete(
-    path: string,
-    handler: RequestHandler,
-    ...handlers: RequestHandler[]
-  ): void {
-    const allHandlers = [handler, ...handlers];
-    this.router.addRoute('delete', path, allHandlers);
+  public get(path: string, ...handlers: RequestHandler[]): void {
+    this.registerRoute(HttpMethod.GET, path, handlers);
   }
 
-  public patch(
-    path: string,
-    handler: RequestHandler,
-    ...handlers: RequestHandler[]
-  ): void {
-    const allHandlers = [handler, ...handlers];
-    this.router.addRoute('patch', path, allHandlers);
+  public post(path: string, ...handlers: RequestHandler[]): void {
+    this.registerRoute(HttpMethod.POST, path, handlers);
+  }
+
+  public put(path: string, ...handlers: RequestHandler[]): void {
+    this.registerRoute(HttpMethod.PUT, path, handlers);
+  }
+
+  public delete(path: string, ...handlers: RequestHandler[]): void {
+    this.registerRoute(HttpMethod.DELETE, path, handlers);
   }
 
   public static(root: string): RequestHandler {
@@ -111,8 +98,13 @@ class TashakkoriExpress {
       modifiedPathname = '/' + modifiedPathname;
     }
 
+    if (!method) {
+      res.status(400).send('Bad Request: Method is undefined');
+      return;
+    }
+
     const matchingRoutes = this.router.matchRoute(
-      method as string,
+      method.toLowerCase() as HttpMethod,
       modifiedPathname,
       req
     );
