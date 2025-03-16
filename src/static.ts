@@ -49,14 +49,19 @@ export async function serveStatic(
 
     const mimeType = mime.lookup(filePath) || 'application/octet-stream';
 
+    if (mimeType.startsWith('image/')) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+    } else {
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+    }
+
     res.status(200);
     res.setHeader('Content-Type', mimeType);
-    res.setHeader('Cache-Control', 'public, max-age=3600');
 
     const stream = fs.createReadStream(filePath);
     stream.pipe(res);
 
-    stream.on('end', () => res.end());
+    stream.on('finish', () => res.end());
     stream.on('error', (err) => next(err));
   } catch (error) {
     if (error instanceof FileError) {

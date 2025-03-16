@@ -1,20 +1,16 @@
-import { Route, Request, RequestHandler } from './types';
+import { Route, Request, RequestHandler, HttpMethod } from './types';
 
 export class Router {
-  private routes: Route[];
+  private routes: Route[] = [];
 
-  constructor() {
-    this.routes = [];
-  }
-
-  public addRoute(method: string, path: string, handlers: RequestHandler[]): void {
+  public addRoute(method: HttpMethod, path: string, handlers: RequestHandler[]): void {
     this.routes.push({ method, path, handlers });
   }
 
-  public matchRoute(method: string, pathname: string, req: Request): Route[] {
+  public matchRoute(method: HttpMethod, pathname: string, req: Request): Route[] {
     return this.routes.filter(
       (route) =>
-        (route.method === method.toLowerCase() || route.method === 'all') &&
+        (route.method === method || route.method === HttpMethod.ALL) &&
         this.checkPath(route.path, pathname, req)
     );
   }

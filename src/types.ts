@@ -1,9 +1,14 @@
 /* eslint-disable no-undef */
 import { IncomingMessage, ServerResponse } from 'http';
 
-// TYPES
 export type NextFunction = (err?: Error | unknown) => void;
-
+export enum HttpMethod {
+  GET = 'get',
+  POST = 'post',
+  PUT = 'put',
+  DELETE = 'delete',
+  ALL = 'all'
+}
 export interface Request extends IncomingMessage {
   query: Record<string, string>;
   params: Record<string, string>;
@@ -35,12 +40,11 @@ export type ErrorHandler = (
 export type RequestHandler = SimpleHandler | NextHandler | ErrorHandler;
 
 export type Route = {
-  method: string;
+  method: HttpMethod;
   path: string;
   handlers: RequestHandler[];
 };
 
-// METHODS
 export function attachResponseMethods(response: Response, res: ServerResponse) {
   response.status = (code: number): Response => {
     res.statusCode = code;
