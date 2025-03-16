@@ -10,8 +10,19 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write ."
   },
-  "keywords": [],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alirezatsh/Tashakkoriexpress"
+  },
+  "keywords": [
+    "http",
+    "rest",
+    "restful",
+    "router",
+    "typescript",
+    "node"
+  ],
+  "author": "alireza tashakkori",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
