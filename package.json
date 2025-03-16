@@ -1,6 +1,6 @@
 {
   "name": "tashakkoriexpress",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "types": "dist/index.d.ts",
   "description": "",
   "main": "dist/index.js",
