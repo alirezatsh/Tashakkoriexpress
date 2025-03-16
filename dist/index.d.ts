@@ -3,13 +3,14 @@ declare class TashakkoriExpress {
   private router;
   constructor();
   use(handler: RequestHandler): void;
+  // eslint-disable-next-line no-dupe-class-members
   use(path: string, handler: RequestHandler): void;
-  all(path: string, handler: RequestHandler, ...handlers: RequestHandler[]): void;
-  get(path: string, handler: RequestHandler, ...handlers: RequestHandler[]): void;
-  post(path: string, handler: RequestHandler, ...handlers: RequestHandler[]): void;
-  put(path: string, handler: RequestHandler, ...handlers: RequestHandler[]): void;
-  delete(path: string, handler: RequestHandler, ...handlers: RequestHandler[]): void;
-  patch(path: string, handler: RequestHandler, ...handlers: RequestHandler[]): void;
+  private registerRoute;
+  all(path: string, ...handlers: RequestHandler[]): void;
+  get(path: string, ...handlers: RequestHandler[]): void;
+  post(path: string, ...handlers: RequestHandler[]): void;
+  put(path: string, ...handlers: RequestHandler[]): void;
+  delete(path: string, ...handlers: RequestHandler[]): void;
   static(root: string): RequestHandler;
   listen(port: number, callback?: () => void): void;
   private handleRequest;

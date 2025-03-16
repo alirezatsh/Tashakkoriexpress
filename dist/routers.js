@@ -1,6 +1,8 @@
+/* eslint-disable no-undef */
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.Router = void 0;
+const types_1 = require('./types');
 class Router {
   constructor() {
     this.routes = [];
@@ -11,7 +13,7 @@ class Router {
   matchRoute(method, pathname, req) {
     return this.routes.filter(
       (route) =>
-        (route.method === method.toLowerCase() || route.method === 'all') &&
+        (route.method === method || route.method === types_1.HttpMethod.ALL) &&
         this.checkPath(route.path, pathname, req)
     );
   }

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 'use strict';
 var __awaiter =
   (this && this.__awaiter) ||
@@ -75,12 +76,16 @@ function serveStatic(root, req, res, next) {
       }
       const mimeType =
         mime_types_1.default.lookup(filePath) || 'application/octet-stream';
+      if (mimeType.startsWith('image/')) {
+        res.setHeader('Cache-Control', 'public, max-age=31536000');
+      } else {
+        res.setHeader('Cache-Control', 'public, max-age=3600');
+      }
       res.status(200);
       res.setHeader('Content-Type', mimeType);
-      res.setHeader('Cache-Control', 'public, max-age=3600');
       const stream = fs_extra_1.default.createReadStream(filePath);
       stream.pipe(res);
-      stream.on('end', () => res.end());
+      stream.on('finish', () => res.end());
       stream.on('error', (err) => next(err));
     } catch (error) {
       if (error instanceof FileError) {

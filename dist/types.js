@@ -1,9 +1,17 @@
 /* eslint-disable no-undef */
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.mountResponseMethods = mountResponseMethods;
-// METHODS
-function mountResponseMethods(response, res) {
+exports.HttpMethod = void 0;
+exports.attachResponseMethods = attachResponseMethods;
+var HttpMethod;
+(function (HttpMethod) {
+  HttpMethod['GET'] = 'get';
+  HttpMethod['POST'] = 'post';
+  HttpMethod['PUT'] = 'put';
+  HttpMethod['DELETE'] = 'delete';
+  HttpMethod['ALL'] = 'all';
+})(HttpMethod || (exports.HttpMethod = HttpMethod = {}));
+function attachResponseMethods(response, res) {
   response.status = (code) => {
     res.statusCode = code;
     return res;

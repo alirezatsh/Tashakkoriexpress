@@ -42,6 +42,7 @@ app.listen(3000, () => {
 ### Routing Methods
 
 #### `app.use([path], middleware)`
+
 Registers a global middleware or a middleware for a specific path.
 
 ```ts
@@ -52,6 +53,7 @@ app.use((req, res, next) => {
 ```
 
 #### `app.get(path, handler)`
+
 Handles `GET` requests.
 
 ```ts
@@ -61,6 +63,7 @@ app.get('/users', (req, res) => {
 ```
 
 #### `app.post(path, handler)`
+
 Handles `POST` requests.
 
 ```ts
@@ -70,6 +73,7 @@ app.post('/users', (req, res) => {
 ```
 
 #### `app.put(path, handler)`
+
 Handles `PUT` requests.
 
 ```ts
@@ -79,6 +83,7 @@ app.put('/users/:id', (req, res) => {
 ```
 
 #### `app.delete(path, handler)`
+
 Handles `DELETE` requests.
 
 ```ts
@@ -88,6 +93,7 @@ app.delete('/users/:id', (req, res) => {
 ```
 
 #### `app.all(path, handler)`
+
 Handles all HTTP methods.
 
 ```ts
@@ -99,6 +105,7 @@ app.all('/any-method', (req, res) => {
 ### Request and Response Helpers
 
 #### `req.query`
+
 Access query parameters:
 
 ```ts
@@ -108,6 +115,7 @@ app.get('/search', (req, res) => {
 ```
 
 #### `res.json(data)`
+
 Send a JSON response:
 
 ```ts
@@ -117,6 +125,7 @@ app.get('/data', (req, res) => {
 ```
 
 #### `res.redirect(url)`
+
 Redirect to another URL:
 
 ```ts
@@ -126,6 +135,7 @@ app.get('/google', (req, res) => {
 ```
 
 #### `res.send(data)`
+
 Send text, JSON, or buffer data:
 
 ```ts
@@ -164,6 +174,3 @@ app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
 ```
-
-
-

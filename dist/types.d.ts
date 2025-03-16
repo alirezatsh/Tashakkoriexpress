@@ -1,5 +1,12 @@
 import { IncomingMessage, ServerResponse } from 'http';
 export type NextFunction = (err?: Error | unknown) => void;
+export declare enum HttpMethod {
+  GET = 'get',
+  POST = 'post',
+  PUT = 'put',
+  DELETE = 'delete',
+  ALL = 'all'
+}
 export interface Request extends IncomingMessage {
   query: Record<string, string>;
   params: Record<string, string>;
@@ -25,11 +32,11 @@ export type ErrorHandler = (
 ) => void | Promise<void>;
 export type RequestHandler = SimpleHandler | NextHandler | ErrorHandler;
 export type Route = {
-  method: string;
+  method: HttpMethod;
   path: string;
   handlers: RequestHandler[];
 };
-export declare function mountResponseMethods(
+export declare function attachResponseMethods(
   response: Response,
   res: ServerResponse
 ): void;

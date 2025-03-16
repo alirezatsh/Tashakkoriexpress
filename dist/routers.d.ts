@@ -1,8 +1,7 @@
-import { Route, Request, RequestHandler } from './types';
+import { Route, Request, RequestHandler, HttpMethod } from './types';
 export declare class Router {
   private routes;
-  constructor();
-  addRoute(method: string, path: string, handlers: RequestHandler[]): void;
-  matchRoute(method: string, pathname: string, req: Request): Route[];
+  addRoute(method: HttpMethod, path: string, handlers: RequestHandler[]): void;
+  matchRoute(method: HttpMethod, pathname: string, req: Request): Route[];
   private checkPath;
 }

@@ -1,3 +1,5 @@
+/* eslint-disable require-yield */
+/* eslint-disable no-undef */
 'use strict';
 var __awaiter =
   (this && this.__awaiter) ||
@@ -35,7 +37,6 @@ var __awaiter =
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.tashakkoriexpress = tashakkoriexpress;
 /* eslint-disable no-dupe-class-members */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const http_1 = require('http');
 const routers_1 = require('./routers');
 const static_1 = require('./static');
@@ -48,34 +49,28 @@ class TashakkoriExpress {
   }
   use(pathOrHandler, handler) {
     if (typeof pathOrHandler === 'string' && handler) {
-      this.router.addRoute('all', pathOrHandler, [handler]);
+      this.router.addRoute(types_1.HttpMethod.ALL, pathOrHandler, [handler]);
     } else if (typeof pathOrHandler === 'function') {
-      this.router.addRoute('all', '*', [pathOrHandler]);
+      this.router.addRoute(types_1.HttpMethod.ALL, '*', [pathOrHandler]);
     }
   }
-  all(path, handler, ...handlers) {
-    const allHandlers = [handler, ...handlers];
-    this.router.addRoute('all', path, allHandlers);
+  registerRoute(method, path, handlers) {
+    this.router.addRoute(method, path, handlers);
   }
-  get(path, handler, ...handlers) {
-    const allHandlers = [handler, ...handlers];
-    this.router.addRoute('get', path, allHandlers);
+  all(path, ...handlers) {
+    this.registerRoute(types_1.HttpMethod.ALL, path, handlers);
   }
-  post(path, handler, ...handlers) {
-    const allHandlers = [handler, ...handlers];
-    this.router.addRoute('post', path, allHandlers);
+  get(path, ...handlers) {
+    this.registerRoute(types_1.HttpMethod.GET, path, handlers);
   }
-  put(path, handler, ...handlers) {
-    const allHandlers = [handler, ...handlers];
-    this.router.addRoute('put', path, allHandlers);
+  post(path, ...handlers) {
+    this.registerRoute(types_1.HttpMethod.POST, path, handlers);
   }
-  delete(path, handler, ...handlers) {
-    const allHandlers = [handler, ...handlers];
-    this.router.addRoute('delete', path, allHandlers);
+  put(path, ...handlers) {
+    this.registerRoute(types_1.HttpMethod.PUT, path, handlers);
   }
-  patch(path, handler, ...handlers) {
-    const allHandlers = [handler, ...handlers];
-    this.router.addRoute('patch', path, allHandlers);
+  delete(path, ...handlers) {
+    this.registerRoute(types_1.HttpMethod.DELETE, path, handlers);
   }
   static(root) {
     return (req, res, next) =>
@@ -87,7 +82,7 @@ class TashakkoriExpress {
     const server = (0, http_1.createServer)((req, res) => {
       const request = req;
       const response = res;
-      (0, types_1.mountResponseMethods)(response, res);
+      (0, types_1.attachResponseMethods)(response, res);
       this.handleRequest(request, response);
     });
     server.listen(port, callback);
@@ -111,7 +106,15 @@ class TashakkoriExpress {
       if (!modifiedPathname.startsWith('/')) {
         modifiedPathname = '/' + modifiedPathname;
       }
-      const matchingRoutes = this.router.matchRoute(method, modifiedPathname, req);
+      if (!method) {
+        res.status(400).send('Bad Request: Method is undefined');
+        return;
+      }
+      const matchingRoutes = this.router.matchRoute(
+        method.toLowerCase(),
+        modifiedPathname,
+        req
+      );
       if (matchingRoutes.length === 0) {
         if (!res.writableEnded) {
           res.status(404).send('Not Found');
